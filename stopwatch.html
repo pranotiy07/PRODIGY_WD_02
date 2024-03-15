@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <h1>Stopwatch</h1>
+  <body>
+    <video autoplay muted loop id="myVideo">
+        <source src="beach.mp4" type="video/mp4"> 
+       </video>
+  </body>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    video{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+    }
+
+    #stopwatch {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+
+    #lapTimes {
+      font-size: 1.2em;
+    }
+
+    button {
+      font-size: 1em;
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="stopwatch">00:00:00</div>
+  <button onclick="startStop()">Start/Stop</button>
+  <button onclick="lap()">Lap</button>
+  <button onclick="reset()">Reset</button>
+
+  <div id="lapTimes"></div>
+
+  <script>
+    let timer;
+    let isRunning = false;
+    let seconds = 0;
+    let lapCounter = 1;
+
+    function startStop() {
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+      } else {
+        timer = setInterval(updateStopwatch, 1000);
+        isRunning = true;
+      }
+    }
+
+    function lap() {
+      if (isRunning) {
+        const lapTime = formatTime(seconds);
+        const lapElement = document.createElement('p');
+        lapElement.textContent = `Lap ${lapCounter}: ${lapTime}`;
+        document.getElementById('lapTimes').appendChild(lapElement);
+        lapCounter++;
+      }
+    }
+
+    function reset() {
+      clearInterval(timer);
+      isRunning = false;
+      seconds = 0;
+      lapCounter = 1;
+      updateStopwatch();
+      document.getElementById('lapTimes').innerHTML = '';
+    }
+
+    function updateStopwatch() {
+      seconds++;
+      document.getElementById('stopwatch').textContent = formatTime(seconds);
+    }
+
+    function formatTime(timeInSeconds) {
+      const hours = Math.floor(timeInSeconds / 3600);
+      const minutes = Math.floor((timeInSeconds % 3600) / 60);
+      const seconds = timeInSeconds % 60;
+
+      return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    function pad(num) {
+      return num.toString().padStart(2, '0');
+    }
+  </script>
+
+</body>
+</html>
